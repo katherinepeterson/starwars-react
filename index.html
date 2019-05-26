@@ -6,12 +6,13 @@
         <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' />
     </head>
     <body>
+        <h1>Star Wars - React Style</h1>
         <div id='root'></div>
     <script type='text/babel'>
-        
+
         const ListPeople = ({people})=> {
             return (
-                <ul>
+                <ul style={{listStyle: 'none'}}>
                     {
                         people.map(person=> {
                         return (
@@ -24,13 +25,12 @@
                     })
                     }
                 </ul>
-            )
-        }
+                )
+            }   
 
         const Details = ({person})=> {
-        
             return (
-                <ul>
+                <ul style={{listStyle: 'none'}}>
                     <li>Name: {person.name}</li>
                     <li>Hair Color: {person.hair_color}</li>
                     <li>Height: {person.height}</li>
@@ -38,48 +38,51 @@
                     <li>Birth Year: {person.birth_year}</li>
                     <li>Homeworld: {person.homeworld}</li>
                 </ul>
-            )
-        }
+                    )
+                }   
         
         class Main extends React.Component{
         constructor(){
-            super();
+            super()
             this.state = {
             people: [],
             id: null
-            };
+            }
         }
         async componentDidMount(){
             try {
                 const result = await fetch('https://swapi.co/api/people/')
                 const people = await result.json()
-                console.log(people)
                 this.setState({people: people.results})
             }
             catch(err){
                 console.log('there was an error')
             }
             window.addEventListener('hashchange', ()=>{
-            const id = window.location.hash.slice(1)*1;
-            this.setState({ id });
+            const id = window.location.hash.slice(1)*1
+            this.setState({ id })
             });
             if(window.location.hash.length > 1){
-            const id = window.location.hash.slice(1)*1;
-            this.setState({ id });
+            const id = window.location.hash.slice(1)*1
+            this.setState({ id })
             }
         }
         
         render(){
-            
+            const hashLength = window.location.hash.length
             return (
-            <div>
+            <div style={{display: 'flex', justifyContent: 'space-around'}}>
                 <div>
-                <h1>Star Wars - React Style</h1>
                 <ListPeople people = {this.state.people}/>
                 </div>
-                <div>
-                {this.state.id !== null ? (<Details person = {this.state.people[this.state.id]}/>) : (null)}
-                </div>
+                {hashLength > 1 ? (
+                    <div>
+                        <a href='#'>Hide Details</a>
+                        <h2>Details for {this.state.people[this.state.id].name}</h2>
+                        <Details person = {this.state.people[this.state.id]}/>
+                    </div>
+                    )
+                : <div></div>} 
             </div>
             );
         }
