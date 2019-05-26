@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+        <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+        <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+        <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' />
+    </head>
+    <body>
+        <div id='root'></div>
+    <script type='text/babel'>
+        
+        const ListPeople = ({people})=> {
+            return (
+                <ul>
+                    {
+                        people.map(person=> {
+                        return <li key={person.id}>{person.name}</li>
+                    })
+                    }
+                </ul>
+            )
+        }
+        
+        class Main extends React.Component{
+        constructor(){
+            super();
+            this.state = {
+            people: []
+            };
+        }
+        async componentDidMount(){
+            try {
+                const result = await fetch('https://swapi.co/api/people/')
+                const people = await result.json()
+                console.log(people)
+                this.setState({people: people.results})
+            }
+            catch(err){
+                console.log('there was an error')
+            }
+        }
+        
+        render(){
+            
+            return (
+            <div>
+                <h1>Star Wars - React Style</h1>
+                <ListPeople people = {this.state.people}/>
+            </div>
+            );
+        }
+        }
+        const root = document.querySelector('#root');
+        ReactDOM.render(<Main />, root);
+    </script>
+    </body>
+</html>
